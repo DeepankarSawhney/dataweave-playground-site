@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1a4a70"/>
+      <stop offset="100%" stop-color="#0a1e30"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="64" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00a1df"/>
+      <stop offset="100%" stop-color="#38d9f5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="64" height="5" rx="3" fill="url(#bar)"/>
+  <!-- clip top bar to rounded corners -->
+  <rect x="0" y="5" width="64" height="3" fill="url(#bg)"/>
+  <rect x="0" y="0" width="64" height="5" rx="3" fill="url(#bar)"/>
+
+  <!-- Left bracket  < -->
+  <path d="M13 22 L7 32 L13 42" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Slash  / -->
+  <line x1="28" y1="20" x2="22" y2="44" stroke="#00a1df" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Right bracket  > -->
+  <path d="M33 22 L39 32 L33 42" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- "dw" small tag bottom-right -->
+  <rect x="42" y="40" width="18" height="12" rx="3" fill="#00a1df" opacity="0.85"/>
+  <text x="51" y="50.5"
+        font-family="-apple-system, system-ui, monospace"
+        font-weight="800"
+        font-size="8"
+        text-anchor="middle"
+        fill="white"
+        letter-spacing="0.3">dw</text>
+</svg>
