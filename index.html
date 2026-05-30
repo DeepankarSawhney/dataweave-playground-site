@@ -3,8 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DataWeave Playground — Self-Hosted</title>
-  <meta name="description" content="A self-hosted Docker image for the MuleSoft DataWeave Playground. Write DW 2.0 transformations locally — no account required." />
+
+  <!-- ── Primary SEO ─────────────────────────────────────────────── -->
+  <title>DataWeave Playground — Self-Hosted Docker Sandbox for MuleSoft DW 2.0</title>
+  <meta name="description" content="Run a self-hosted DataWeave Playground in seconds with Docker. Test MuleSoft DW 2.0 transformations locally — JSON, XML, CSV, YAML — no account or internet required." />
+  <meta name="keywords" content="DataWeave playground, DataWeave 2.0, MuleSoft DataWeave, DW playground self-hosted, DataWeave Docker, DataWeave sandbox, DataWeave online editor, DataWeave transform, DataWeave JSON to XML, DataWeave CSV, MuleSoft integration" />
+  <meta name="author" content="Deepankar Sawhney" />
+  <link rel="canonical" href="https://deepankarsawhney.github.io/dataweave-playground-site/" />
+
+  <!-- ── Open Graph (Facebook, LinkedIn, Slack previews) ─────────── -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://deepankarsawhney.github.io/dataweave-playground-site/" />
+  <meta property="og:title"       content="DataWeave Playground — Self-Hosted Docker Sandbox" />
+  <meta property="og:description" content="Run a self-hosted DataWeave Playground in seconds with Docker. Test MuleSoft DW 2.0 transformations locally — JSON, XML, CSV, YAML — no account required." />
+  <meta property="og:image"       content="https://deepankarsawhney.github.io/dataweave-playground-site/og-preview.png" />
+  <meta property="og:site_name"   content="DataWeave Playground" />
+  <meta property="og:locale"      content="en_US" />
+
+  <!-- ── Twitter / X card ────────────────────────────────────────── -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="DataWeave Playground — Self-Hosted Docker Sandbox" />
+  <meta name="twitter:description" content="Test MuleSoft DataWeave 2.0 transformations locally. Supports JSON, XML, CSV, YAML. One docker run command — no account needed." />
+  <meta name="twitter:image"       content="https://deepankarsawhney.github.io/dataweave-playground-site/og-preview.png" />
+
+  <!-- ── Structured data (Google rich results) ───────────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "DataWeave Playground",
+    "description": "Self-hosted Docker sandbox for testing MuleSoft DataWeave 2.0 transformations. Supports JSON, XML, CSV, YAML, NDJSON and more.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Linux, macOS, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Deepankar Sawhney",
+      "url": "https://github.com/DeepankarSawhney"
+    },
+    "url": "https://deepankarsawhney.github.io/dataweave-playground-site/",
+    "downloadUrl": "https://hub.docker.com/r/deepankar2810/dataweave-playground",
+    "softwareVersion": "1.0.12",
+    "releaseNotes": "https://deepankarsawhney.github.io/dataweave-playground-site/#releases",
+    "keywords": "DataWeave, MuleSoft, DW 2.0, JSON, XML, CSV, YAML, Docker, playground, sandbox"
+  }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {

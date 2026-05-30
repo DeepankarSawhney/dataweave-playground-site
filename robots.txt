@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://deepankarsawhney.github.io/dataweave-playground-site/sitemap.xml
