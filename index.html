@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataWeave Playground — Self-Hosted</title>
+  <meta name="description" content="A self-hosted Docker image for the MuleSoft DataWeave Playground. Write DW 2.0 transformations locally — no account required." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            accent: '#00a1df',
+            'accent-dim': '#0087bb',
+            'dw-dark': '#0d1117',
+            'dw-panel': '#161b22',
+            'dw-border': '#30363d',
+          },
+          fontFamily: {
+            mono: ['Cascadia Code', 'Fira Code', 'JetBrains Mono', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .copy-btn:active { transform: scale(.95); }
+    .gradient-text {
+      background: linear-gradient(135deg, #00a1df 0%, #00d4ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @keyframes fade-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    .fade-in { animation: fade-in .5s ease both; }
+    .card-hover { transition: border-color .2s, transform .2s, box-shadow .2s; }
+    .card-hover:hover { border-color: #00a1df; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,161,223,.12); }
+  </style>
+</head>
+<body class="bg-dw-dark text-gray-200 min-h-screen">
+
+<!-- ── NAV ─────────────────────────────────────────────────── -->
+<nav class="sticky top-0 z-50 bg-dw-panel/90 backdrop-blur border-b border-dw-border">
+  <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2 font-semibold text-white">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a1df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+      </svg>
+      DW Playground
+    </a>
+    <div class="flex items-center gap-3 text-sm">
+      <a href="#releases" class="text-gray-400 hover:text-white transition-colors">Releases</a>
+      <a href="#roadmap" class="text-gray-400 hover:text-white transition-colors">Roadmap</a>
+      <a href="#bugs" class="text-gray-400 hover:text-white transition-colors hidden sm:inline">Bugs</a>
+      <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground"
+         target="_blank" rel="noopener"
+         class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#066da5] hover:bg-[#0587c9] text-white transition-colors text-xs font-medium">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.186.186 0 0 0-.186.186v1.887c0 .102.084.185.186.185m-2.974 2.662h2.118a.186.186 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.185-.184H2.1a.185.185 0 0 0-.185.185v1.889c0 .102.083.185.185.185m2.954 0h2.118a.186.186 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.185-.184H5.054a.185.185 0 0 0-.185.185v1.889c0 .102.083.185.185.185m2.93 0h2.12a.185.185 0 0 0 .184-.185v-1.89a.185.185 0 0 0-.184-.184h-2.12a.185.185 0 0 0-.185.185v1.889c0 .102.083.185.186.185m2.964 0h2.118a.185.185 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.185-.184h-2.118a.186.186 0 0 0-.186.185v1.889c0 .102.084.185.186.185m2.928 0h2.119a.185.185 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.184-.184h-2.12a.185.185 0 0 0-.184.185v1.889c0 .102.083.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg>
+        Docker Hub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<section class="max-w-5xl mx-auto px-4 pt-20 pb-16 text-center fade-in">
+  <span class="inline-block mb-4 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
+    Self-Hosted · Docker · No account required
+  </span>
+  <h1 class="text-4xl sm:text-5xl font-bold text-white mb-5 leading-tight">
+    DataWeave Playground<br/>
+    <span class="gradient-text">on your machine</span>
+  </h1>
+  <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
+    A full-featured clone of the MuleSoft DataWeave Playground that runs entirely in Docker.
+    Write DW&nbsp;2.0 transformations, supply any input format, and see the output instantly —
+    with no cloud dependency or MuleSoft account.
+  </p>
+
+  <!-- Docker pull command -->
+  <div class="inline-flex items-center gap-3 bg-dw-panel border border-dw-border rounded-xl px-5 py-3.5 font-mono text-sm text-gray-300 max-w-full overflow-x-auto mb-4">
+    <span class="text-accent select-none">$</span>
+    <span id="pull-cmd">docker run -p 3000:3001 deepankar2810/dataweave-playground:latest</span>
+    <button onclick="copyPull()" class="copy-btn ml-2 flex-shrink-0 p-1.5 rounded bg-dw-border hover:bg-gray-600 transition-colors" title="Copy">
+      <svg id="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+    </button>
+  </div>
+  <p class="text-gray-500 text-sm mb-10">Then open <code class="text-accent">http://localhost:3000</code></p>
+
+  <div class="flex flex-wrap justify-center gap-3">
+    <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground"
+       target="_blank" rel="noopener"
+       class="px-5 py-2.5 rounded-lg bg-accent hover:bg-accent-dim text-white font-medium text-sm transition-colors">
+      Pull from Docker Hub
+    </a>
+    <a href="#features"
+       class="px-5 py-2.5 rounded-lg border border-dw-border hover:border-accent text-gray-300 hover:text-white font-medium text-sm transition-colors">
+      See features ↓
+    </a>
+  </div>
+</section>
+
+<!-- ── SCREENSHOT PLACEHOLDER ─────────────────────────────── -->
+<div class="max-w-4xl mx-auto px-4 pb-20">
+  <div class="rounded-xl border border-dw-border overflow-hidden shadow-2xl">
+    <!-- Fake editor chrome -->
+    <div class="bg-dw-panel flex items-center gap-1.5 px-4 py-2.5 border-b border-dw-border">
+      <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
+      <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
+      <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
+      <span class="ml-3 text-xs text-gray-500 font-mono">DataWeave Playground — localhost:3000</span>
+    </div>
+    <div class="bg-[#0d1117] grid grid-cols-3 divide-x divide-dw-border text-xs font-mono" style="min-height:200px">
+      <div class="p-4">
+        <div class="text-gray-500 uppercase tracking-widest text-[10px] mb-3">Script</div>
+        <div class="text-purple-400">%dw 2.0</div>
+        <div><span class="text-purple-400">output</span> <span class="text-accent">application/json</span></div>
+        <div class="text-gray-500">---</div>
+        <div class="mt-2"><span class="text-yellow-300">payload</span> <span class="text-accent">map</span> (item) <span class="text-accent">-&gt;</span> &#123;</div>
+        <div class="pl-4"><span class="text-green-400">name</span>: <span class="text-yellow-300">item</span>.name,</div>
+        <div class="pl-4"><span class="text-green-400">value</span>: <span class="text-yellow-300">item</span>.value * 2</div>
+        <div>&#125;</div>
+      </div>
+      <div class="p-4">
+        <div class="text-gray-500 uppercase tracking-widest text-[10px] mb-3">Input · JSON</div>
+        <div class="text-gray-300">[</div>
+        <div class="pl-4">&#123; <span class="text-green-400">"name"</span>: <span class="text-orange-300">"alpha"</span>, <span class="text-green-400">"value"</span>: <span class="text-blue-300">5</span> &#125;,</div>
+        <div class="pl-4">&#123; <span class="text-green-400">"name"</span>: <span class="text-orange-300">"beta"</span>,  <span class="text-green-400">"value"</span>: <span class="text-blue-300">8</span> &#125;</div>
+        <div class="text-gray-300">]</div>
+      </div>
+      <div class="p-4">
+        <div class="text-gray-500 uppercase tracking-widest text-[10px] mb-3">Output <span class="ml-2 px-1.5 py-0.5 rounded text-[9px] bg-green-900/50 text-green-400">OK</span></div>
+        <div class="text-gray-300">[</div>
+        <div class="pl-4">&#123; <span class="text-green-400">"name"</span>: <span class="text-orange-300">"alpha"</span>, <span class="text-green-400">"value"</span>: <span class="text-blue-300">10</span> &#125;,</div>
+        <div class="pl-4">&#123; <span class="text-green-400">"name"</span>: <span class="text-orange-300">"beta"</span>,  <span class="text-green-400">"value"</span>: <span class="text-blue-300">16</span> &#125;</div>
+        <div class="text-gray-300">]</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FEATURES ────────────────────────────────────────────── -->
+<section id="features" class="max-w-5xl mx-auto px-4 pb-20">
+  <h2 class="text-2xl font-bold text-white mb-2 text-center">Features</h2>
+  <p class="text-gray-400 text-center mb-10">Everything you need for local DataWeave development</p>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+    <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="text-2xl mb-3">⚡</div>
+      <h3 class="font-semibold text-white mb-1">Fast transforms</h3>
+      <p class="text-gray-400 text-sm">Persistent JVM sidecar for DW&nbsp;2.11 delivers sub-200ms responses on all requests — as fast as the online playground.</p>
+    </div>
+
+    <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="text-2xl mb-3">🧩</div>
+      <h3 class="font-semibold text-white mb-1">3-panel editor</h3>
+      <p class="text-gray-400 text-sm">Script, Input and Output panels with draggable dividers. Monaco Editor (VS Code engine) with DataWeave syntax highlighting.</p>
+    </div>
+
+    <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="text-2xl mb-3">📂</div>
+      <h3 class="font-semibold text-white mb-1">Multiple inputs</h3>
+      <p class="text-gray-400 text-sm">Add named inputs beyond the default <code class="text-accent text-xs">payload</code> using tabs. Each input has its own format selector.</p>
+    </div>
+
+    <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="text-2xl mb-3">🔢</div>
+      <h3 class="font-semibold text-white mb-1">Multiple DW versions</h3>
+      <p class="text-gray-400 text-sm">Three versions pre-installed (2.11, 2.6, 2.3). Download additional versions on demand straight from the version dropdown.</p>
+    </div>
+
+    <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="text-2xl mb-3">💡</div>
+      <h3 class="font-semibold text-white mb-1">Context-aware autocomplete</h3>
+      <p class="text-gray-400 text-sm">Suggestions filtered by inferred data type (Array, Object, String, Number) based on the expression and your actual input payload.</p>
+    </div>
+
+    <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="text-2xl mb-3">💾</div>
+      <h3 class="font-semibold text-white mb-1">Import / Export</h3>
+      <p class="text-gray-400 text-sm">Save and restore your entire workspace as a <code class="text-accent text-xs">.dwproject.json</code> file. Six built-in starter examples included.</p>
+    </div>
+
+  </div>
+
+  <!-- Format support table -->
+  <div class="mt-8 bg-dw-panel border border-dw-border rounded-xl overflow-hidden">
+    <div class="px-5 py-3 border-b border-dw-border">
+      <h3 class="font-semibold text-white text-sm">Supported input / output formats</h3>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y divide-dw-border text-sm">
+      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>JSON</div>
+      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>XML</div>
+      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>CSV</div>
+      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>YAML</div>
+      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>NDJSON</div>
+      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>Plain Text</div>
+      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>Java Properties</div>
+      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>Java</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RELEASES ────────────────────────────────────────────── -->
+<section id="releases" class="max-w-5xl mx-auto px-4 pb-20">
+  <h2 class="text-2xl font-bold text-white mb-2 text-center">Releases</h2>
+  <p class="text-gray-400 text-center mb-10">Published to <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground" target="_blank" class="text-accent hover:underline">Docker Hub</a></p>
+
+  <div class="space-y-4">
+
+    <!-- v1.0.11 -->
+    <div class="bg-dw-panel border border-dw-border rounded-xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-dw-border flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-accent/15 text-accent border border-accent/30">Latest</span>
+          <h3 class="font-bold text-white">v1.0.11</h3>
+        </div>
+        <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground/tags" target="_blank"
+           class="text-xs text-gray-400 hover:text-accent transition-colors">View on Docker Hub →</a>
+      </div>
+      <ul class="px-5 py-4 space-y-1.5 text-sm text-gray-300">
+        <li class="flex gap-2"><span class="text-red-400 mt-0.5">🔒</span><span><strong class="text-white">Security:</strong> Patched all 25 HIGH CVEs reported by Docker Scout — targeted Debian package upgrades + removed npm/npx from runtime image.</span></li>
+      </ul>
+    </div>
+
+    <!-- v1.0.10 -->
+    <div class="bg-dw-panel border border-dw-border rounded-xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-dw-border flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3">
+          <h3 class="font-bold text-white">v1.0.10</h3>
+        </div>
+      </div>
+      <ul class="px-5 py-4 space-y-1.5 text-sm text-gray-300">
+        <li class="flex gap-2"><span class="mt-0.5">🍎</span><span><strong class="text-white">Apple Silicon (M1–M5):</strong> True multi-arch image — arm64 + amd64. Docker Desktop picks the right variant automatically, no <code class="text-accent text-xs">--platform</code> flag needed.</span></li>
+        <li class="flex gap-2"><span class="mt-0.5">📦</span><span><strong class="text-white">Smaller image:</strong> Compressed size reduced to ~265 MB.</span></li>
+      </ul>
+    </div>
+
+    <!-- v1.0.4 -->
+    <div class="bg-dw-panel border border-dw-border rounded-xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-dw-border flex items-center gap-3">
+        <h3 class="font-bold text-white">v1.0.4</h3>
+        <span class="text-gray-500 text-xs">Initial feature release</span>
+      </div>
+      <ul class="px-5 py-4 space-y-1.5 text-sm text-gray-300">
+        <li class="flex gap-2"><span class="mt-0.5">✨</span><span>Three DataWeave versions pre-installed (2.11, 2.6, 2.3)</span></li>
+        <li class="flex gap-2"><span class="mt-0.5">✨</span><span>On-demand version download, multiple named inputs, import/export, light/dark theme</span></li>
+        <li class="flex gap-2"><span class="mt-0.5">✨</span><span>Six built-in example scripts, no payload size limits</span></li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── ROADMAP ────────────────────────────────────────────── -->
+<section id="roadmap" class="max-w-5xl mx-auto px-4 pb-20">
+  <h2 class="text-2xl font-bold text-white mb-2 text-center">Roadmap</h2>
+  <p class="text-gray-400 text-center mb-10">What's coming in future releases</p>
+
+  <div class="grid sm:grid-cols-2 gap-4">
+
+    <div class="bg-dw-panel border border-accent/40 rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
+        <span class="text-xs font-semibold text-yellow-400 uppercase tracking-wider">In Progress</span>
+      </div>
+      <h3 class="font-semibold text-white mb-1">JVM Sidecar for DW 2.11</h3>
+      <p class="text-gray-400 text-sm">Persistent JVM engine replaces per-request GraalVM process spawns — brings DW 2.11 response times from ~2–5s down to ~150ms.</p>
+    </div>
+
+    <div class="bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="w-2 h-2 rounded-full bg-gray-500"></span>
+        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Planned</span>
+      </div>
+      <h3 class="font-semibold text-white mb-1">Performance improvements</h3>
+      <p class="text-gray-400 text-sm">Brotli pre-compression for static assets, response caching for identical transforms, connection keep-alive tuning.</p>
+    </div>
+
+    <div class="bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="w-2 h-2 rounded-full bg-gray-500"></span>
+        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Planned</span>
+      </div>
+      <h3 class="font-semibold text-white mb-1">Script history</h3>
+      <p class="text-gray-400 text-sm">Local browser-based history of recent scripts so you can quickly revert or replay a previous transformation.</p>
+    </div>
+
+    <div class="bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="w-2 h-2 rounded-full bg-gray-500"></span>
+        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Planned</span>
+      </div>
+      <h3 class="font-semibold text-white mb-1">Shareable workspace links</h3>
+      <p class="text-gray-400 text-sm">Encode script + input into a URL fragment so you can share a complete playground state with a single link.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── BUG REPORTER ───────────────────────────────────────── -->
+<section id="bugs" class="max-w-5xl mx-auto px-4 pb-24">
+  <div class="bg-dw-panel border border-dw-border rounded-2xl p-8 text-center">
+    <div class="text-4xl mb-4">🐛</div>
+    <h2 class="text-2xl font-bold text-white mb-3">Found a bug?</h2>
+    <p class="text-gray-400 max-w-lg mx-auto mb-8">
+      Open a GitHub issue and include the DW version, your script, input, and what you expected vs what happened.
+      Requests for new features and format support are welcome too.
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="https://github.com/DeepankarSawhney/dataweave-playground-site/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D+"
+         target="_blank" rel="noopener"
+         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-red-600/20 border border-red-500/40 hover:bg-red-600/30 text-red-400 hover:text-red-300 font-medium text-sm transition-colors">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Report a bug
+      </a>
+      <a href="https://github.com/DeepankarSawhney/dataweave-playground-site/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D+"
+         target="_blank" rel="noopener"
+         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-dw-border hover:bg-gray-600 text-gray-300 hover:text-white font-medium text-sm transition-colors">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Request a feature
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="border-t border-dw-border">
+  <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+    <span>Built by <a href="https://github.com/DeepankarSawhney" class="hover:text-white transition-colors">Deepankar Sawhney</a></span>
+    <div class="flex items-center gap-4">
+      <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground" target="_blank" class="hover:text-white transition-colors">Docker Hub</a>
+      <a href="https://github.com/DeepankarSawhney/dataweave-playground-site/issues" target="_blank" class="hover:text-white transition-colors">Issues</a>
+    </div>
+    <span>Licensed under <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" class="hover:text-white transition-colors">Apache 2.0</a></span>
+  </div>
+</footer>
+
+<script>
+  function copyPull() {
+    const cmd = document.getElementById('pull-cmd').textContent;
+    navigator.clipboard.writeText(cmd).then(() => {
+      const icon = document.getElementById('copy-icon');
+      icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+      icon.setAttribute('stroke', '#00a1df');
+      setTimeout(() => {
+        icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+        icon.setAttribute('stroke', 'currentColor');
+      }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
