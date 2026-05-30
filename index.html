@@ -11,7 +11,7 @@
   <meta name="author" content="Deepankar Sawhney" />
   <link rel="canonical" href="https://deepankarsawhney.github.io/dataweave-playground-site/" />
 
-  <!-- ── Open Graph (Facebook, LinkedIn, Slack previews) ─────────── -->
+  <!-- ── Open Graph ───────────────────────────────────────────────── -->
   <meta property="og:type"        content="website" />
   <meta property="og:url"         content="https://deepankarsawhney.github.io/dataweave-playground-site/" />
   <meta property="og:title"       content="DataWeave Playground — Self-Hosted Docker Sandbox" />
@@ -20,13 +20,13 @@
   <meta property="og:site_name"   content="DataWeave Playground" />
   <meta property="og:locale"      content="en_US" />
 
-  <!-- ── Twitter / X card ────────────────────────────────────────── -->
+  <!-- ── Twitter / X ──────────────────────────────────────────────── -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:title"       content="DataWeave Playground — Self-Hosted Docker Sandbox" />
   <meta name="twitter:description" content="Test MuleSoft DataWeave 2.0 transformations locally. Supports JSON, XML, CSV, YAML. One docker run command — no account needed." />
   <meta name="twitter:image"       content="https://deepankarsawhney.github.io/dataweave-playground-site/og-preview.png" />
 
-  <!-- ── Structured data (Google rich results) ───────────────────── -->
+  <!-- ── Structured data ──────────────────────────────────────────── -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -35,23 +35,16 @@
     "description": "Self-hosted Docker sandbox for testing MuleSoft DataWeave 2.0 transformations. Supports JSON, XML, CSV, YAML, NDJSON and more.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Linux, macOS, Windows",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "author": {
-      "@type": "Person",
-      "name": "Deepankar Sawhney",
-      "url": "https://github.com/DeepankarSawhney"
-    },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "name": "Deepankar Sawhney", "url": "https://github.com/DeepankarSawhney" },
     "url": "https://deepankarsawhney.github.io/dataweave-playground-site/",
     "downloadUrl": "https://hub.docker.com/r/deepankar2810/dataweave-playground",
-    "softwareVersion": "1.0.12",
+    "softwareVersion": "1.0.11",
     "releaseNotes": "https://deepankarsawhney.github.io/dataweave-playground-site/#releases",
     "keywords": "DataWeave, MuleSoft, DW 2.0, JSON, XML, CSV, YAML, Docker, playground, sandbox"
   }
   </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -59,77 +52,133 @@
       theme: {
         extend: {
           colors: {
-            accent: '#00a1df',
-            'accent-dim': '#0087bb',
-            'dw-dark': '#0d1117',
-            'dw-panel': '#161b22',
+            accent:      '#00a1df',
+            'accent-dim':'#0087bb',
+            'dw-dark':   '#0d1117',
+            'dw-panel':  '#161b22',
             'dw-border': '#30363d',
           },
-          fontFamily: {
-            mono: ['Cascadia Code', 'Fira Code', 'JetBrains Mono', 'monospace'],
-          },
+          fontFamily: { mono: ['Cascadia Code','Fira Code','JetBrains Mono','monospace'] },
         }
       }
     }
   </script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-    .copy-btn:active { transform: scale(.95); }
+
+    /* ── Syntax colours (used in code examples) ── */
+    .kw   { color: #c792ea; }   /* %dw, output, import, fun, if, else, as */
+    .fn   { color: #82aaff; }   /* map, filter, upper, reduce */
+    .op   { color: #89ddff; }   /* ->, @, -- */
+    .str  { color: #f78c6c; }   /* "strings" */
+    .num  { color: #f78c6c; }   /* numbers */
+    .bool { color: #ff9800; }   /* true, false */
+    .key  { color: #addb67; }   /* JSON keys */
+    .var  { color: #ffcb6b; }   /* variables / identifiers */
+    .cmt  { color: #546e7a; font-style: italic; }
+    .xml-tag   { color: #f07178; }
+    .xml-attr  { color: #c3e88d; }
+    .xml-val   { color: #f78c6c; }
+    .xml-decl  { color: #546e7a; }
+    .csv-hdr   { color: #addb67; font-weight: 600; }
+
+    /* ── Utility ── */
     .gradient-text {
-      background: linear-gradient(135deg, #00a1df 0%, #00d4ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      background: linear-gradient(135deg, #00a1df 0%, #38d9f5 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    @keyframes fade-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-    .fade-in { animation: fade-in .5s ease both; }
+    .hero-glow {
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,161,223,.18) 0%, transparent 70%);
+    }
+    @keyframes fade-up { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+    .fade-up { animation: fade-up .55s ease both; }
+
     .card-hover { transition: border-color .2s, transform .2s, box-shadow .2s; }
-    .card-hover:hover { border-color: #00a1df; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,161,223,.12); }
+    .card-hover:hover { border-color:#00a1df; transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,161,223,.12); }
+
+    /* ── Step connector line ── */
+    .step-line::after {
+      content:''; position:absolute; top:20px; left:calc(50% + 28px);
+      width:calc(100% - 56px); height:1px;
+      background: linear-gradient(90deg, #30363d 0%, #30363d 100%);
+    }
+
+    /* ── Tab system ── */
+    .tab-btn { transition: color .15s, border-color .15s, background .15s; }
+    .tab-btn.active { color:#fff; border-color:#00a1df; background:rgba(0,161,223,.08); }
+    .tab-pane { display:none; }
+    .tab-pane.active { display:block; }
+
+    /* ── Code block ── */
+    .code-block { font-family: 'Cascadia Code','Fira Code','JetBrains Mono',monospace; font-size:.75rem; line-height:1.65; }
+
+    /* ── Scrollbar (Webkit) ── */
+    ::-webkit-scrollbar { width:6px; height:6px; }
+    ::-webkit-scrollbar-track { background:#161b22; }
+    ::-webkit-scrollbar-thumb { background:#30363d; border-radius:3px; }
+
+    /* ── Copy button ── */
+    .copy-btn:active { transform:scale(.93); }
+
+    /* ── Numbered step badge ── */
+    .step-num {
+      width:40px; height:40px; border-radius:50%;
+      background:rgba(0,161,223,.12); border:1px solid rgba(0,161,223,.3);
+      color:#00a1df; font-weight:700; font-size:.9rem;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
   </style>
 </head>
 <body class="bg-dw-dark text-gray-200 min-h-screen">
 
-<!-- ── NAV ─────────────────────────────────────────────────── -->
+<!-- ═══════════════════════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════════════════════ -->
 <nav class="sticky top-0 z-50 bg-dw-panel/90 backdrop-blur border-b border-dw-border">
-  <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+  <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
     <a href="#" class="flex items-center gap-2 font-semibold text-white">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a1df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00a1df" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
       </svg>
       DW Playground
     </a>
-    <div class="flex items-center gap-3 text-sm">
-      <a href="#releases" class="text-gray-400 hover:text-white transition-colors">Releases</a>
-      <a href="#roadmap" class="text-gray-400 hover:text-white transition-colors">Roadmap</a>
-      <a href="#bugs" class="text-gray-400 hover:text-white transition-colors hidden sm:inline">Bugs</a>
+    <div class="flex items-center gap-1 text-sm">
+      <a href="#how-it-works" class="px-3 py-1.5 text-gray-400 hover:text-white transition-colors rounded-md hover:bg-white/5">Quick start</a>
+      <a href="#examples"     class="px-3 py-1.5 text-gray-400 hover:text-white transition-colors rounded-md hover:bg-white/5">Examples</a>
+      <a href="#releases"     class="px-3 py-1.5 text-gray-400 hover:text-white transition-colors rounded-md hover:bg-white/5">Releases</a>
       <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground"
          target="_blank" rel="noopener"
-         class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#066da5] hover:bg-[#0587c9] text-white transition-colors text-xs font-medium">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.186.186 0 0 0-.186.186v1.887c0 .102.084.185.186.185m-2.974 2.662h2.118a.186.186 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.185-.184H2.1a.185.185 0 0 0-.185.185v1.889c0 .102.083.185.185.185m2.954 0h2.118a.186.186 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.185-.184H5.054a.185.185 0 0 0-.185.185v1.889c0 .102.083.185.185.185m2.93 0h2.12a.185.185 0 0 0 .184-.185v-1.89a.185.185 0 0 0-.184-.184h-2.12a.185.185 0 0 0-.185.185v1.889c0 .102.083.185.186.185m2.964 0h2.118a.185.185 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.185-.184h-2.118a.186.186 0 0 0-.186.185v1.889c0 .102.084.185.186.185m2.928 0h2.119a.185.185 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.184-.184h-2.12a.185.185 0 0 0-.184.185v1.889c0 .102.083.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg>
+         class="ml-2 flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#066da5] hover:bg-[#0587c9] text-white transition-colors text-xs font-medium">
+        <!-- Docker whale icon -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.186.186 0 0 0-.186.186v1.887c0 .102.084.185.186.185m-2.974 2.662h2.118a.186.186 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.185-.184H2.1a.185.185 0 0 0-.185.185v1.889c0 .102.083.185.185.185m2.954 0h2.118a.186.186 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.185-.184H5.054a.185.185 0 0 0-.185.185v1.889c0 .102.083.185.185.185m2.93 0h2.12a.185.185 0 0 0 .184-.185v-1.89a.185.185 0 0 0-.184-.184h-2.12a.185.185 0 0 0-.185.185v1.889c0 .102.083.185.186.185m2.964 0h2.118a.185.185 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.185-.184h-2.118a.186.186 0 0 0-.186.185v1.889c0 .102.084.185.186.185m2.928 0h2.119a.185.185 0 0 0 .185-.185v-1.89a.185.185 0 0 0-.184-.184h-2.12a.185.185 0 0 0-.184.185v1.889c0 .102.083.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg>
         Docker Hub
       </a>
     </div>
   </div>
 </nav>
 
-<!-- ── HERO ────────────────────────────────────────────────── -->
-<section class="max-w-5xl mx-auto px-4 pt-20 pb-16 text-center fade-in">
-  <span class="inline-block mb-4 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
-    Self-Hosted · Docker · No account required
-  </span>
-  <h1 class="text-4xl sm:text-5xl font-bold text-white mb-5 leading-tight">
-    DataWeave Playground<br/>
-    <span class="gradient-text">on your machine</span>
+<!-- ═══════════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════════ -->
+<div class="hero-glow">
+<section class="max-w-6xl mx-auto px-4 pt-20 pb-14 text-center fade-up">
+  <div class="inline-flex items-center gap-2 mb-5 px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/25">
+    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+    v1.0.11 · Latest on Docker Hub
+  </div>
+  <h1 class="text-4xl sm:text-6xl font-extrabold text-white mb-5 leading-tight tracking-tight">
+    MuleSoft DataWeave&nbsp;Playground<br/>
+    <span class="gradient-text">running on your machine</span>
   </h1>
   <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-10">
-    A full-featured clone of the MuleSoft DataWeave Playground that runs entirely in Docker.
-    Write DW&nbsp;2.0 transformations, supply any input format, and see the output instantly —
-    with no cloud dependency or MuleSoft account.
+    A full-featured, self-hosted clone of the official MuleSoft DataWeave Playground.
+    Write DW&nbsp;2.0 scripts, supply any format as input, and see the transformation
+    result instantly — no account, no cloud, no limitations.
   </p>
 
-  <!-- Docker pull command -->
-  <div class="inline-flex items-center gap-3 bg-dw-panel border border-dw-border rounded-xl px-5 py-3.5 font-mono text-sm text-gray-300 max-w-full overflow-x-auto mb-4">
-    <span class="text-accent select-none">$</span>
+  <!-- Docker run command -->
+  <div class="inline-flex items-center gap-3 bg-dw-panel border border-dw-border rounded-xl px-5 py-3.5 font-mono text-sm text-gray-200 max-w-full overflow-x-auto mb-3 shadow-lg">
+    <span class="text-gray-500 select-none">$</span>
     <span id="pull-cmd">docker run -p 3000:3001 deepankar2810/dataweave-playground:latest</span>
     <button onclick="copyPull()" class="copy-btn ml-2 flex-shrink-0 p-1.5 rounded bg-dw-border hover:bg-gray-600 transition-colors" title="Copy">
       <svg id="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -137,131 +186,525 @@
       </svg>
     </button>
   </div>
-  <p class="text-gray-500 text-sm mb-10">Then open <code class="text-accent">http://localhost:3000</code></p>
+  <p class="text-gray-500 text-sm mb-10">
+    Then open <code class="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">http://localhost:3000</code>
+    in your browser
+  </p>
 
   <div class="flex flex-wrap justify-center gap-3">
     <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground"
        target="_blank" rel="noopener"
-       class="px-5 py-2.5 rounded-lg bg-accent hover:bg-accent-dim text-white font-medium text-sm transition-colors">
+       class="px-5 py-2.5 rounded-lg bg-accent hover:bg-accent-dim text-white font-semibold text-sm transition-colors shadow-md">
       Pull from Docker Hub
     </a>
-    <a href="#features"
-       class="px-5 py-2.5 rounded-lg border border-dw-border hover:border-accent text-gray-300 hover:text-white font-medium text-sm transition-colors">
-      See features ↓
+    <a href="#examples"
+       class="px-5 py-2.5 rounded-lg border border-dw-border hover:border-accent text-gray-300 hover:text-white font-semibold text-sm transition-colors">
+      See examples ↓
     </a>
   </div>
 </section>
+</div>
 
-<!-- ── SCREENSHOT PLACEHOLDER ─────────────────────────────── -->
-<div class="max-w-4xl mx-auto px-4 pb-20">
-  <div class="rounded-xl border border-dw-border overflow-hidden shadow-2xl">
-    <!-- Fake editor chrome -->
-    <div class="bg-dw-panel flex items-center gap-1.5 px-4 py-2.5 border-b border-dw-border">
-      <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
-      <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
-      <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
-      <span class="ml-3 text-xs text-gray-500 font-mono">DataWeave Playground — localhost:3000</span>
+<!-- ═══════════════════════════════════════════════════════════════
+     APP PREVIEW (detailed mockup)
+═══════════════════════════════════════════════════════════════ -->
+<div class="max-w-6xl mx-auto px-4 pb-24">
+  <div class="rounded-2xl border border-dw-border overflow-hidden shadow-2xl ring-1 ring-white/5">
+
+    <!-- Browser chrome -->
+    <div class="bg-[#1c2128] flex items-center gap-2 px-4 py-2.5 border-b border-dw-border">
+      <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+      <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+      <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+      <div class="ml-4 flex-1 max-w-xs bg-dw-dark border border-dw-border rounded-md px-3 py-1 text-[11px] text-gray-500 font-mono">
+        localhost:3000
+      </div>
     </div>
-    <div class="bg-[#0d1117] grid grid-cols-3 divide-x divide-dw-border text-xs font-mono" style="min-height:200px">
-      <div class="p-4">
-        <div class="text-gray-500 uppercase tracking-widest text-[10px] mb-3">Script</div>
-        <div class="text-purple-400">%dw 2.0</div>
-        <div><span class="text-purple-400">output</span> <span class="text-accent">application/json</span></div>
-        <div class="text-gray-500">---</div>
-        <div class="mt-2"><span class="text-yellow-300">payload</span> <span class="text-accent">map</span> (item) <span class="text-accent">-&gt;</span> &#123;</div>
-        <div class="pl-4"><span class="text-green-400">name</span>: <span class="text-yellow-300">item</span>.name,</div>
-        <div class="pl-4"><span class="text-green-400">value</span>: <span class="text-yellow-300">item</span>.value * 2</div>
-        <div>&#125;</div>
+
+    <!-- App toolbar -->
+    <div class="bg-dw-panel flex items-center justify-between px-4 py-2 border-b border-dw-border gap-3">
+      <div class="flex items-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00a1df" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+        </svg>
+        <span class="text-white text-xs font-semibold">DataWeave Playground</span>
       </div>
-      <div class="p-4">
-        <div class="text-gray-500 uppercase tracking-widest text-[10px] mb-3">Input · JSON</div>
-        <div class="text-gray-300">[</div>
-        <div class="pl-4">&#123; <span class="text-green-400">"name"</span>: <span class="text-orange-300">"alpha"</span>, <span class="text-green-400">"value"</span>: <span class="text-blue-300">5</span> &#125;,</div>
-        <div class="pl-4">&#123; <span class="text-green-400">"name"</span>: <span class="text-orange-300">"beta"</span>,  <span class="text-green-400">"value"</span>: <span class="text-blue-300">8</span> &#125;</div>
-        <div class="text-gray-300">]</div>
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-dw-dark border border-dw-border text-xs text-gray-300">
+          DW 2.11
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <span class="text-gray-600 text-xs hidden sm:inline">Filter &amp; Map</span>
+        <button class="flex items-center gap-1.5 px-3 py-1 rounded bg-accent hover:bg-accent-dim text-white text-xs font-semibold transition-colors">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+          Run
+        </button>
       </div>
-      <div class="p-4">
-        <div class="text-gray-500 uppercase tracking-widest text-[10px] mb-3">Output <span class="ml-2 px-1.5 py-0.5 rounded text-[9px] bg-green-900/50 text-green-400">OK</span></div>
-        <div class="text-gray-300">[</div>
-        <div class="pl-4">&#123; <span class="text-green-400">"name"</span>: <span class="text-orange-300">"alpha"</span>, <span class="text-green-400">"value"</span>: <span class="text-blue-300">10</span> &#125;,</div>
-        <div class="pl-4">&#123; <span class="text-green-400">"name"</span>: <span class="text-orange-300">"beta"</span>,  <span class="text-green-400">"value"</span>: <span class="text-blue-300">16</span> &#125;</div>
-        <div class="text-gray-300">]</div>
+    </div>
+
+    <!-- Three panels -->
+    <div class="grid grid-cols-3 divide-x divide-dw-border code-block" style="min-height:300px; background:#0d1117">
+
+      <!-- Script panel -->
+      <div class="flex flex-col">
+        <div class="px-4 py-2 border-b border-dw-border flex items-center gap-2 bg-dw-panel/60">
+          <span class="text-[10px] uppercase tracking-widest text-gray-500 font-semibold">Script</span>
+        </div>
+        <div class="p-4 overflow-auto flex-1">
+          <div><span class="kw">%dw</span> <span class="num">2.0</span></div>
+          <div><span class="kw">output</span> <span class="str">application/json</span></div>
+          <div class="op">---</div>
+          <div class="mt-1.5">
+            <span class="var">payload</span>.<span class="key">orders</span>
+          </div>
+          <div class="pl-2 text-gray-500">|&gt;</div>
+          <div class="pl-2">
+            <span class="fn">filter</span> ((o) <span class="op">-&gt;</span>
+          </div>
+          <div class="pl-6">
+            o.<span class="key">status</span> <span class="op">==</span> <span class="str">"active"</span>)
+          </div>
+          <div class="pl-2">
+            <span class="op">|&gt;</span> <span class="fn">map</span> ((o) <span class="op">-&gt;</span> &#123;
+          </div>
+          <div class="pl-6"><span class="key">id</span>:       o.<span class="var">id</span>,</div>
+          <div class="pl-6"><span class="key">customer</span>: o.<span class="var">customer</span>,</div>
+          <div class="pl-6"><span class="key">total</span>:    o.<span class="var">price</span> <span class="op">*</span> o.<span class="var">quantity</span></div>
+          <div class="pl-2">&#125;)</div>
+        </div>
+      </div>
+
+      <!-- Input panel -->
+      <div class="flex flex-col">
+        <div class="px-4 py-2 border-b border-dw-border flex items-center gap-2 bg-dw-panel/60">
+          <span class="text-[10px] uppercase tracking-widest text-gray-500 font-semibold">Input</span>
+          <span class="px-1.5 py-0.5 rounded text-[9px] bg-dw-border text-gray-400">payload · JSON</span>
+        </div>
+        <div class="p-4 overflow-auto flex-1 text-gray-300">
+          <div>&#123;</div>
+          <div class="pl-3"><span class="key">"orders"</span>: [</div>
+          <div class="pl-6">&#123; <span class="key">"id"</span>: <span class="num">1</span>, <span class="key">"customer"</span>: <span class="str">"Alice"</span>,</div>
+          <div class="pl-8"><span class="key">"price"</span>: <span class="num">25.00</span>, <span class="key">"quantity"</span>: <span class="num">4</span>,</div>
+          <div class="pl-8"><span class="key">"status"</span>: <span class="str">"active"</span> &#125;,</div>
+          <div class="pl-6">&#123; <span class="key">"id"</span>: <span class="num">2</span>, <span class="key">"customer"</span>: <span class="str">"Bob"</span>,</div>
+          <div class="pl-8"><span class="key">"price"</span>: <span class="num">10.00</span>, <span class="key">"quantity"</span>: <span class="num">2</span>,</div>
+          <div class="pl-8"><span class="key">"status"</span>: <span class="str">"cancelled"</span> &#125;,</div>
+          <div class="pl-6">&#123; <span class="key">"id"</span>: <span class="num">3</span>, <span class="key">"customer"</span>: <span class="str">"Carol"</span>,</div>
+          <div class="pl-8"><span class="key">"price"</span>: <span class="num">15.00</span>, <span class="key">"quantity"</span>: <span class="num">6</span>,</div>
+          <div class="pl-8"><span class="key">"status"</span>: <span class="str">"active"</span> &#125;</div>
+          <div class="pl-3">]</div>
+          <div>&#125;</div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="flex flex-col">
+        <div class="px-4 py-2 border-b border-dw-border flex items-center gap-2 bg-dw-panel/60">
+          <span class="text-[10px] uppercase tracking-widest text-gray-500 font-semibold">Output</span>
+          <span class="px-1.5 py-0.5 rounded text-[9px] bg-green-900/50 text-green-400 border border-green-800/40">✓ OK</span>
+          <span class="ml-auto text-[10px] text-gray-600">143 ms</span>
+        </div>
+        <div class="p-4 overflow-auto flex-1 text-gray-300">
+          <div>[</div>
+          <div class="pl-3">&#123;</div>
+          <div class="pl-6"><span class="key">"id"</span>: <span class="num">1</span>,</div>
+          <div class="pl-6"><span class="key">"customer"</span>: <span class="str">"Alice"</span>,</div>
+          <div class="pl-6"><span class="key">"total"</span>: <span class="num">100.00</span></div>
+          <div class="pl-3">&#125;,</div>
+          <div class="pl-3">&#123;</div>
+          <div class="pl-6"><span class="key">"id"</span>: <span class="num">3</span>,</div>
+          <div class="pl-6"><span class="key">"customer"</span>: <span class="str">"Carol"</span>,</div>
+          <div class="pl-6"><span class="key">"total"</span>: <span class="num">90.00</span></div>
+          <div class="pl-3">&#125;</div>
+          <div>]</div>
+        </div>
+      </div>
+
+    </div><!-- /three panels -->
+  </div><!-- /mockup -->
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════════════════════════════ -->
+<section id="how-it-works" class="max-w-6xl mx-auto px-4 pb-24">
+  <h2 class="text-2xl font-bold text-white mb-2 text-center">Quick start</h2>
+  <p class="text-gray-400 text-center mb-12">Up and running in under 30 seconds</p>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Step 1 -->
+    <div class="bg-dw-panel border border-dw-border rounded-xl p-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="step-num">1</div>
+        <h3 class="font-semibold text-white">Pull &amp; run</h3>
+      </div>
+      <p class="text-gray-400 text-sm mb-4">One command pulls the image and starts the server. Works on Linux, macOS, and Windows.</p>
+      <div class="bg-dw-dark rounded-lg border border-dw-border overflow-hidden">
+        <div class="flex items-center gap-2 px-3 py-2 border-b border-dw-border bg-dw-panel/40">
+          <span class="w-2 h-2 rounded-full bg-red-500/60"></span>
+          <span class="w-2 h-2 rounded-full bg-yellow-500/60"></span>
+          <span class="w-2 h-2 rounded-full bg-green-500/60"></span>
+          <span class="ml-2 text-[10px] text-gray-600 font-mono">terminal</span>
+        </div>
+        <div class="p-3 code-block text-xs">
+          <div><span class="text-gray-500">$</span> <span class="text-white">docker run -p 3000:3001 \</span></div>
+          <div class="pl-4 text-accent">deepankar2810/dataweave-playground</div>
+          <div class="mt-2 text-gray-500">Starting DW Playground…</div>
+          <div class="text-green-400">✓ Listening on port 3001</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="bg-dw-panel border border-dw-border rounded-xl p-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="step-num">2</div>
+        <h3 class="font-semibold text-white">Open your browser</h3>
+      </div>
+      <p class="text-gray-400 text-sm mb-4">Navigate to <code class="text-accent text-xs">localhost:3000</code>. The playground loads with a Monaco Editor and six built-in examples to get you started.</p>
+      <div class="bg-dw-dark rounded-lg border border-dw-border overflow-hidden">
+        <div class="flex items-center gap-2 px-3 py-2 border-b border-dw-border bg-dw-panel/40">
+          <div class="flex gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-red-500/60"></span>
+            <span class="w-2 h-2 rounded-full bg-yellow-500/60"></span>
+            <span class="w-2 h-2 rounded-full bg-green-500/60"></span>
+          </div>
+          <div class="flex-1 text-center">
+            <span class="text-[10px] font-mono text-accent bg-accent/10 border border-accent/20 rounded px-2 py-0.5">localhost:3000</span>
+          </div>
+        </div>
+        <div class="p-3 flex flex-col gap-1.5">
+          <div class="h-2 rounded bg-dw-border w-3/4"></div>
+          <div class="h-2 rounded bg-dw-border w-1/2"></div>
+          <div class="mt-1 grid grid-cols-3 gap-1.5 h-14">
+            <div class="rounded bg-accent/10 border border-accent/20"></div>
+            <div class="rounded bg-dw-border/60"></div>
+            <div class="rounded bg-green-900/20 border border-green-800/20"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="bg-dw-panel border border-dw-border rounded-xl p-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="step-num">3</div>
+        <h3 class="font-semibold text-white">Write &amp; transform</h3>
+      </div>
+      <p class="text-gray-400 text-sm mb-4">Type your DataWeave script, paste any input payload, choose your format, and hit <kbd class="bg-dw-dark border border-dw-border text-xs px-1.5 py-0.5 rounded text-gray-300">Ctrl+Enter</kbd> or click Run.</p>
+      <div class="bg-dw-dark rounded-lg border border-dw-border p-3 code-block text-xs">
+        <div><span class="kw">%dw</span> <span class="num">2.0</span></div>
+        <div><span class="kw">output</span> <span class="str">application/xml</span></div>
+        <div class="op">---</div>
+        <div class="mt-1 text-gray-300">&#123; root: &#123;</div>
+        <div class="pl-3"><span class="key">message</span>: <span class="fn">upper</span>(<span class="var">payload</span>.<span class="key">text</span>)</div>
+        <div>&#125; &#125;</div>
+        <div class="mt-2 flex items-center gap-2">
+          <span class="text-gray-600">→</span>
+          <span class="px-1.5 py-0.5 rounded text-[9px] bg-green-900/50 text-green-400 border border-green-800/40">✓ output · XML · 118ms</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     EXAMPLES (tabbed)
+═══════════════════════════════════════════════════════════════ -->
+<section id="examples" class="max-w-6xl mx-auto px-4 pb-24">
+  <h2 class="text-2xl font-bold text-white mb-2 text-center">Transformation examples</h2>
+  <p class="text-gray-400 text-center mb-10">Real DataWeave scripts you can paste straight into the playground</p>
+
+  <!-- Tab buttons -->
+  <div class="flex flex-wrap gap-2 mb-4">
+    <button onclick="showTab('tab-filter')" id="btn-filter"
+      class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium text-gray-400 border border-dw-border">
+      Filter &amp; Map
+    </button>
+    <button onclick="showTab('tab-xml')" id="btn-xml"
+      class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-400 border border-dw-border">
+      JSON → XML
+    </button>
+    <button onclick="showTab('tab-csv')" id="btn-csv"
+      class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-400 border border-dw-border">
+      CSV → JSON
+    </button>
+  </div>
+
+  <!-- ── Tab 1: Filter & Map ─────────────────────────────── -->
+  <div id="tab-filter" class="tab-pane active rounded-xl border border-dw-border overflow-hidden shadow-lg">
+    <div class="bg-dw-panel px-4 py-2 border-b border-dw-border flex items-center gap-3 text-xs text-gray-500">
+      <span>Filter an order list to active orders, then compute totals</span>
+      <span class="ml-auto px-2 py-0.5 rounded bg-dw-border text-gray-400">Input: JSON · Output: JSON</span>
+    </div>
+    <div class="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-dw-border code-block" style="background:#0d1117">
+      <!-- script -->
+      <div>
+        <div class="px-3 py-1.5 border-b border-dw-border bg-dw-panel/50 text-[10px] uppercase tracking-widest text-gray-500">Script</div>
+        <div class="p-4 overflow-auto" style="min-height:220px">
+          <div><span class="kw">%dw</span> <span class="num">2.0</span></div>
+          <div><span class="kw">output</span> <span class="str">application/json</span></div>
+          <div class="op mb-2">---</div>
+          <div><span class="var">payload</span>.<span class="key">orders</span></div>
+          <div class="pl-2"><span class="fn">filter</span> ((o) <span class="op">-&gt;</span></div>
+          <div class="pl-6">o.<span class="key">status</span> <span class="op">==</span> <span class="str">"active"</span>)</div>
+          <div class="pl-2"><span class="fn">map</span> ((o) <span class="op">-&gt;</span> &#123;</div>
+          <div class="pl-6"><span class="key">id</span>:       o.<span class="var">id</span>,</div>
+          <div class="pl-6"><span class="key">customer</span>: o.<span class="var">customer</span>,</div>
+          <div class="pl-6"><span class="key">total</span>:    o.<span class="var">price</span> <span class="op">*</span> o.<span class="var">quantity</span></div>
+          <div class="pl-2">&#125;)</div>
+        </div>
+      </div>
+      <!-- input -->
+      <div>
+        <div class="px-3 py-1.5 border-b border-dw-border bg-dw-panel/50 text-[10px] uppercase tracking-widest text-gray-500">Input · JSON (payload)</div>
+        <div class="p-4 overflow-auto text-gray-300" style="min-height:220px">
+          <div>&#123;</div>
+          <div class="pl-3"><span class="key">"orders"</span>: [</div>
+          <div class="pl-6">&#123; <span class="key">"id"</span>: <span class="num">1</span>,</div>
+          <div class="pl-8"><span class="key">"customer"</span>: <span class="str">"Alice"</span>,</div>
+          <div class="pl-8"><span class="key">"price"</span>: <span class="num">25.00</span>,</div>
+          <div class="pl-8"><span class="key">"quantity"</span>: <span class="num">4</span>,</div>
+          <div class="pl-8"><span class="key">"status"</span>: <span class="str">"active"</span> &#125;,</div>
+          <div class="pl-6">&#123; <span class="key">"id"</span>: <span class="num">2</span>,</div>
+          <div class="pl-8"><span class="key">"customer"</span>: <span class="str">"Bob"</span>,</div>
+          <div class="pl-8"><span class="key">"price"</span>: <span class="num">10.00</span>,</div>
+          <div class="pl-8"><span class="key">"quantity"</span>: <span class="num">2</span>,</div>
+          <div class="pl-8"><span class="key">"status"</span>: <span class="str">"cancelled"</span> &#125;,</div>
+          <div class="pl-6">&#123; <span class="key">"id"</span>: <span class="num">3</span>,</div>
+          <div class="pl-8"><span class="key">"customer"</span>: <span class="str">"Carol"</span>,</div>
+          <div class="pl-8"><span class="key">"price"</span>: <span class="num">15.00</span>,</div>
+          <div class="pl-8"><span class="key">"quantity"</span>: <span class="num">6</span>,</div>
+          <div class="pl-8"><span class="key">"status"</span>: <span class="str">"active"</span> &#125;</div>
+          <div class="pl-3">]</div>
+          <div>&#125;</div>
+        </div>
+      </div>
+      <!-- output -->
+      <div>
+        <div class="px-3 py-1.5 border-b border-dw-border bg-dw-panel/50 text-[10px] uppercase tracking-widest text-gray-500 flex items-center gap-2">
+          Output <span class="px-1.5 py-0.5 rounded text-[9px] bg-green-900/50 text-green-400 border border-green-800/40">✓ OK</span>
+        </div>
+        <div class="p-4 overflow-auto text-gray-300" style="min-height:220px">
+          <div>[</div>
+          <div class="pl-3">&#123;</div>
+          <div class="pl-6"><span class="key">"id"</span>: <span class="num">1</span>,</div>
+          <div class="pl-6"><span class="key">"customer"</span>: <span class="str">"Alice"</span>,</div>
+          <div class="pl-6"><span class="key">"total"</span>: <span class="num">100.00</span></div>
+          <div class="pl-3">&#125;,</div>
+          <div class="pl-3">&#123;</div>
+          <div class="pl-6"><span class="key">"id"</span>: <span class="num">3</span>,</div>
+          <div class="pl-6"><span class="key">"customer"</span>: <span class="str">"Carol"</span>,</div>
+          <div class="pl-6"><span class="key">"total"</span>: <span class="num">90.00</span></div>
+          <div class="pl-3">&#125;</div>
+          <div>]</div>
+          <div class="mt-3 text-gray-600 text-[10px] italic">Bob's order filtered out — status: "cancelled"</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ── FEATURES ────────────────────────────────────────────── -->
-<section id="features" class="max-w-5xl mx-auto px-4 pb-20">
+  <!-- ── Tab 2: JSON → XML ──────────────────────────────── -->
+  <div id="tab-xml" class="tab-pane rounded-xl border border-dw-border overflow-hidden shadow-lg">
+    <div class="bg-dw-panel px-4 py-2 border-b border-dw-border flex items-center gap-3 text-xs text-gray-500">
+      <span>Convert a JSON product list into an XML catalog with attributes</span>
+      <span class="ml-auto px-2 py-0.5 rounded bg-dw-border text-gray-400">Input: JSON · Output: XML</span>
+    </div>
+    <div class="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-dw-border code-block" style="background:#0d1117">
+      <!-- script -->
+      <div>
+        <div class="px-3 py-1.5 border-b border-dw-border bg-dw-panel/50 text-[10px] uppercase tracking-widest text-gray-500">Script</div>
+        <div class="p-4 overflow-auto" style="min-height:220px">
+          <div><span class="kw">%dw</span> <span class="num">2.0</span></div>
+          <div><span class="kw">output</span> <span class="str">application/xml</span></div>
+          <div class="op mb-2">---</div>
+          <div>&#123;</div>
+          <div class="pl-3"><span class="key">catalog</span>: &#123;</div>
+          <div class="pl-6">(<span class="var">payload</span> <span class="fn">map</span> (item) <span class="op">-&gt;</span> &#123;</div>
+          <div class="pl-8"><span class="key">product</span> <span class="op">@(</span><span class="key">id</span>: item.<span class="var">sku</span>,</div>
+          <div class="pl-16"><span class="key">inStock</span>: item.<span class="var">inStock</span><span class="op">)</span>: &#123;</div>
+          <div class="pl-10"><span class="key">name</span>:  item.<span class="var">name</span>,</div>
+          <div class="pl-10"><span class="key">price</span>: item.<span class="var">price</span></div>
+          <div class="pl-8">&#125;</div>
+          <div class="pl-6">&#125;)</div>
+          <div class="pl-3">&#125;</div>
+          <div>&#125;</div>
+        </div>
+      </div>
+      <!-- input -->
+      <div>
+        <div class="px-3 py-1.5 border-b border-dw-border bg-dw-panel/50 text-[10px] uppercase tracking-widest text-gray-500">Input · JSON (payload)</div>
+        <div class="p-4 overflow-auto text-gray-300" style="min-height:220px">
+          <div>[</div>
+          <div class="pl-3">&#123;</div>
+          <div class="pl-6"><span class="key">"sku"</span>: <span class="str">"A100"</span>,</div>
+          <div class="pl-6"><span class="key">"name"</span>: <span class="str">"Widget Pro"</span>,</div>
+          <div class="pl-6"><span class="key">"price"</span>: <span class="num">29.99</span>,</div>
+          <div class="pl-6"><span class="key">"inStock"</span>: <span class="bool">true</span></div>
+          <div class="pl-3">&#125;,</div>
+          <div class="pl-3">&#123;</div>
+          <div class="pl-6"><span class="key">"sku"</span>: <span class="str">"B200"</span>,</div>
+          <div class="pl-6"><span class="key">"name"</span>: <span class="str">"Gadget Plus"</span>,</div>
+          <div class="pl-6"><span class="key">"price"</span>: <span class="num">49.99</span>,</div>
+          <div class="pl-6"><span class="key">"inStock"</span>: <span class="bool">false</span></div>
+          <div class="pl-3">&#125;</div>
+          <div>]</div>
+        </div>
+      </div>
+      <!-- output -->
+      <div>
+        <div class="px-3 py-1.5 border-b border-dw-border bg-dw-panel/50 text-[10px] uppercase tracking-widest text-gray-500 flex items-center gap-2">
+          Output <span class="px-1.5 py-0.5 rounded text-[9px] bg-green-900/50 text-green-400 border border-green-800/40">✓ OK</span>
+        </div>
+        <div class="p-4 overflow-auto" style="min-height:220px">
+          <div class="xml-decl">&lt;?xml version='1.0' encoding='UTF-8'?&gt;</div>
+          <div class="mt-1"><span class="xml-tag">&lt;catalog&gt;</span></div>
+          <div class="pl-3"><span class="xml-tag">&lt;product</span> <span class="xml-attr">id</span>=<span class="xml-val">"A100"</span> <span class="xml-attr">inStock</span>=<span class="xml-val">"true"</span><span class="xml-tag">&gt;</span></div>
+          <div class="pl-6"><span class="xml-tag">&lt;name&gt;</span><span class="text-gray-300">Widget Pro</span><span class="xml-tag">&lt;/name&gt;</span></div>
+          <div class="pl-6"><span class="xml-tag">&lt;price&gt;</span><span class="num">29.99</span><span class="xml-tag">&lt;/price&gt;</span></div>
+          <div class="pl-3"><span class="xml-tag">&lt;/product&gt;</span></div>
+          <div class="pl-3"><span class="xml-tag">&lt;product</span> <span class="xml-attr">id</span>=<span class="xml-val">"B200"</span> <span class="xml-attr">inStock</span>=<span class="xml-val">"false"</span><span class="xml-tag">&gt;</span></div>
+          <div class="pl-6"><span class="xml-tag">&lt;name&gt;</span><span class="text-gray-300">Gadget Plus</span><span class="xml-tag">&lt;/name&gt;</span></div>
+          <div class="pl-6"><span class="xml-tag">&lt;price&gt;</span><span class="num">49.99</span><span class="xml-tag">&lt;/price&gt;</span></div>
+          <div class="pl-3"><span class="xml-tag">&lt;/product&gt;</span></div>
+          <div><span class="xml-tag">&lt;/catalog&gt;</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tab 3: CSV → JSON ──────────────────────────────── -->
+  <div id="tab-csv" class="tab-pane rounded-xl border border-dw-border overflow-hidden shadow-lg">
+    <div class="bg-dw-panel px-4 py-2 border-b border-dw-border flex items-center gap-3 text-xs text-gray-500">
+      <span>Parse a CSV of student scores, cast types, and assign letter grades</span>
+      <span class="ml-auto px-2 py-0.5 rounded bg-dw-border text-gray-400">Input: CSV · Output: JSON</span>
+    </div>
+    <div class="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-dw-border code-block" style="background:#0d1117">
+      <!-- script -->
+      <div>
+        <div class="px-3 py-1.5 border-b border-dw-border bg-dw-panel/50 text-[10px] uppercase tracking-widest text-gray-500">Script</div>
+        <div class="p-4 overflow-auto" style="min-height:220px">
+          <div><span class="kw">%dw</span> <span class="num">2.0</span></div>
+          <div><span class="kw">output</span> <span class="str">application/json</span></div>
+          <div class="op mb-2">---</div>
+          <div><span class="var">payload</span> <span class="fn">map</span> (row) <span class="op">-&gt;</span> &#123;</div>
+          <div class="pl-3"><span class="key">id</span>:    row.<span class="var">id</span> <span class="kw">as</span> <span class="bool">Number</span>,</div>
+          <div class="pl-3"><span class="key">name</span>:  <span class="fn">upper</span>(row.<span class="var">name</span>),</div>
+          <div class="pl-3"><span class="key">score</span>: row.<span class="var">score</span> <span class="kw">as</span> <span class="bool">Number</span>,</div>
+          <div class="pl-3"><span class="key">grade</span>:</div>
+          <div class="pl-6"><span class="kw">if</span> (row.<span class="var">score</span> <span class="kw">as</span> <span class="bool">Number</span> <span class="op">&gt;=</span> <span class="num">90</span>) <span class="str">"A"</span></div>
+          <div class="pl-6"><span class="kw">else if</span> (row.<span class="var">score</span> <span class="kw">as</span> <span class="bool">Number</span> <span class="op">&gt;=</span> <span class="num">80</span>) <span class="str">"B"</span></div>
+          <div class="pl-6"><span class="kw">else</span> <span class="str">"C"</span></div>
+          <div>&#125;</div>
+        </div>
+      </div>
+      <!-- input -->
+      <div>
+        <div class="px-3 py-1.5 border-b border-dw-border bg-dw-panel/50 text-[10px] uppercase tracking-widest text-gray-500">Input · CSV (payload)</div>
+        <div class="p-4 overflow-auto" style="min-height:220px">
+          <div><span class="csv-hdr">id,name,score</span></div>
+          <div class="text-gray-300">1,alice,92</div>
+          <div class="text-gray-300">2,bob,78</div>
+          <div class="text-gray-300">3,carol,85</div>
+          <div class="text-gray-300">4,dan,90</div>
+          <div class="mt-3 text-gray-600 text-[10px] italic">Set input format to CSV in the dropdown</div>
+        </div>
+      </div>
+      <!-- output -->
+      <div>
+        <div class="px-3 py-1.5 border-b border-dw-border bg-dw-panel/50 text-[10px] uppercase tracking-widest text-gray-500 flex items-center gap-2">
+          Output <span class="px-1.5 py-0.5 rounded text-[9px] bg-green-900/50 text-green-400 border border-green-800/40">✓ OK</span>
+        </div>
+        <div class="p-4 overflow-auto text-gray-300" style="min-height:220px">
+          <div>[</div>
+          <div class="pl-3">&#123; <span class="key">"id"</span>:<span class="num">1</span>, <span class="key">"name"</span>:<span class="str">"ALICE"</span>, <span class="key">"score"</span>:<span class="num">92</span>, <span class="key">"grade"</span>:<span class="str">"A"</span> &#125;,</div>
+          <div class="pl-3">&#123; <span class="key">"id"</span>:<span class="num">2</span>, <span class="key">"name"</span>:<span class="str">"BOB"</span>,   <span class="key">"score"</span>:<span class="num">78</span>, <span class="key">"grade"</span>:<span class="str">"C"</span> &#125;,</div>
+          <div class="pl-3">&#123; <span class="key">"id"</span>:<span class="num">3</span>, <span class="key">"name"</span>:<span class="str">"CAROL"</span>, <span class="key">"score"</span>:<span class="num">85</span>, <span class="key">"grade"</span>:<span class="str">"B"</span> &#125;,</div>
+          <div class="pl-3">&#123; <span class="key">"id"</span>:<span class="num">4</span>, <span class="key">"name"</span>:<span class="str">"DAN"</span>,   <span class="key">"score"</span>:<span class="num">90</span>, <span class="key">"grade"</span>:<span class="str">"A"</span> &#125;</div>
+          <div>]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FEATURES
+═══════════════════════════════════════════════════════════════ -->
+<section id="features" class="max-w-6xl mx-auto px-4 pb-24">
   <h2 class="text-2xl font-bold text-white mb-2 text-center">Features</h2>
   <p class="text-gray-400 text-center mb-10">Everything you need for local DataWeave development</p>
   <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
     <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
       <div class="text-2xl mb-3">⚡</div>
-      <h3 class="font-semibold text-white mb-1">Fast transforms</h3>
-      <p class="text-gray-400 text-sm">Persistent JVM sidecar for DW&nbsp;2.11 delivers sub-200ms responses on all requests — as fast as the online playground.</p>
+      <h3 class="font-semibold text-white mb-1.5">Sub-200ms transforms</h3>
+      <p class="text-gray-400 text-sm">All three engine versions (DW&nbsp;2.11, 2.6, 2.3) are pre-warmed at startup so every request is fast — no cold-start delays.</p>
     </div>
 
     <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
       <div class="text-2xl mb-3">🧩</div>
-      <h3 class="font-semibold text-white mb-1">3-panel editor</h3>
-      <p class="text-gray-400 text-sm">Script, Input and Output panels with draggable dividers. Monaco Editor (VS Code engine) with DataWeave syntax highlighting.</p>
+      <h3 class="font-semibold text-white mb-1.5">Monaco Editor</h3>
+      <p class="text-gray-400 text-sm">Three-panel layout (Script · Input · Output) with resizable dividers, DataWeave syntax highlighting, and Ctrl+Enter shortcut.</p>
     </div>
 
     <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
       <div class="text-2xl mb-3">📂</div>
-      <h3 class="font-semibold text-white mb-1">Multiple inputs</h3>
-      <p class="text-gray-400 text-sm">Add named inputs beyond the default <code class="text-accent text-xs">payload</code> using tabs. Each input has its own format selector.</p>
+      <h3 class="font-semibold text-white mb-1.5">Multiple named inputs</h3>
+      <p class="text-gray-400 text-sm">Add extra inputs beyond <code class="text-accent text-xs">payload</code> using tabs. Each input has its own format selector — mix JSON, XML, and CSV in one transform.</p>
     </div>
 
     <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
       <div class="text-2xl mb-3">🔢</div>
-      <h3 class="font-semibold text-white mb-1">Multiple DW versions</h3>
-      <p class="text-gray-400 text-sm">Three versions pre-installed (2.11, 2.6, 2.3). Download additional versions on demand straight from the version dropdown.</p>
+      <h3 class="font-semibold text-white mb-1.5">Three DW versions</h3>
+      <p class="text-gray-400 text-sm">DW&nbsp;2.11, 2.6, and 2.3 come pre-installed. Download additional versions on demand straight from the version dropdown — no restart needed.</p>
     </div>
 
     <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
       <div class="text-2xl mb-3">💡</div>
-      <h3 class="font-semibold text-white mb-1">Context-aware autocomplete</h3>
-      <p class="text-gray-400 text-sm">Suggestions filtered by inferred data type (Array, Object, String, Number) based on the expression and your actual input payload.</p>
+      <h3 class="font-semibold text-white mb-1.5">Context-aware autocomplete</h3>
+      <p class="text-gray-400 text-sm">Suggestions filtered by inferred data type (Array, Object, String, Number) based on the expression context and your actual input payload.</p>
     </div>
 
     <div class="card-hover bg-dw-panel border border-dw-border rounded-xl p-5">
       <div class="text-2xl mb-3">💾</div>
-      <h3 class="font-semibold text-white mb-1">Import / Export</h3>
-      <p class="text-gray-400 text-sm">Save and restore your entire workspace as a <code class="text-accent text-xs">.dwproject.json</code> file. Six built-in starter examples included.</p>
+      <h3 class="font-semibold text-white mb-1.5">Import / Export workspaces</h3>
+      <p class="text-gray-400 text-sm">Save your entire workspace — scripts, inputs, and settings — as a <code class="text-accent text-xs">.dwproject.json</code> file. Six built-in starter examples included.</p>
     </div>
 
   </div>
 
-  <!-- Format support table -->
+  <!-- Format support -->
   <div class="mt-8 bg-dw-panel border border-dw-border rounded-xl overflow-hidden">
-    <div class="px-5 py-3 border-b border-dw-border">
-      <h3 class="font-semibold text-white text-sm">Supported input / output formats</h3>
+    <div class="px-5 py-3 border-b border-dw-border flex items-center justify-between">
+      <h3 class="font-semibold text-white text-sm">Supported formats</h3>
+      <span class="text-xs text-gray-500">Input &amp; Output</span>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y divide-dw-border text-sm">
-      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>JSON</div>
-      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>XML</div>
-      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>CSV</div>
-      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>YAML</div>
-      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>NDJSON</div>
-      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>Plain Text</div>
-      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>Java Properties</div>
-      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-400"></span>Java</div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 text-sm">
+      <div class="px-4 py-2.5 flex items-center gap-2 border-b border-r border-dw-border/50"><span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>JSON</div>
+      <div class="px-4 py-2.5 flex items-center gap-2 border-b border-r border-dw-border/50"><span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>XML</div>
+      <div class="px-4 py-2.5 flex items-center gap-2 border-b border-r border-dw-border/50"><span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>CSV</div>
+      <div class="px-4 py-2.5 flex items-center gap-2 border-b border-dw-border/50"><span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>YAML</div>
+      <div class="px-4 py-2.5 flex items-center gap-2 border-r border-dw-border/50"><span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>NDJSON</div>
+      <div class="px-4 py-2.5 flex items-center gap-2 border-r border-dw-border/50"><span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>Plain Text</div>
+      <div class="px-4 py-2.5 flex items-center gap-2 border-r border-dw-border/50"><span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>Java Properties</div>
+      <div class="px-4 py-2.5 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0"></span>Java</div>
     </div>
   </div>
 </section>
 
-<!-- ── RELEASES ────────────────────────────────────────────── -->
-<section id="releases" class="max-w-5xl mx-auto px-4 pb-20">
+<!-- ═══════════════════════════════════════════════════════════════
+     RELEASES
+═══════════════════════════════════════════════════════════════ -->
+<section id="releases" class="max-w-6xl mx-auto px-4 pb-24">
   <h2 class="text-2xl font-bold text-white mb-2 text-center">Releases</h2>
   <p class="text-gray-400 text-center mb-10">Published to <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground" target="_blank" class="text-accent hover:underline">Docker Hub</a></p>
-
   <div class="space-y-4">
 
-    <!-- v1.0.11 -->
-    <div class="bg-dw-panel border border-dw-border rounded-xl overflow-hidden">
+    <div class="bg-dw-panel border border-accent/30 rounded-xl overflow-hidden">
       <div class="px-5 py-4 border-b border-dw-border flex items-center justify-between gap-3 flex-wrap">
         <div class="flex items-center gap-3">
           <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-accent/15 text-accent border border-accent/30">Latest</span>
@@ -270,72 +713,61 @@
         <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground/tags" target="_blank"
            class="text-xs text-gray-400 hover:text-accent transition-colors">View on Docker Hub →</a>
       </div>
-      <ul class="px-5 py-4 space-y-1.5 text-sm text-gray-300">
-        <li class="flex gap-2"><span class="text-red-400 mt-0.5">🔒</span><span><strong class="text-white">Security:</strong> Patched all 25 HIGH CVEs reported by Docker Scout — targeted Debian package upgrades + removed npm/npx from runtime image.</span></li>
+      <ul class="px-5 py-4 space-y-2 text-sm text-gray-300">
+        <li class="flex gap-2.5"><span class="text-red-400 flex-shrink-0">🔒</span><span><strong class="text-white">Security:</strong> Patched all 25 HIGH CVEs reported by Docker Scout — targeted Debian package upgrades and removed npm/npx from the runtime image.</span></li>
+        <li class="flex gap-2.5"><span class="flex-shrink-0">🔗</span><span><strong class="text-white">Docs link:</strong> Startup banner now links to this site and the bug reporter.</span></li>
       </ul>
     </div>
 
-    <!-- v1.0.10 -->
     <div class="bg-dw-panel border border-dw-border rounded-xl overflow-hidden">
-      <div class="px-5 py-4 border-b border-dw-border flex items-center justify-between gap-3 flex-wrap">
-        <div class="flex items-center gap-3">
-          <h3 class="font-bold text-white">v1.0.10</h3>
-        </div>
+      <div class="px-5 py-4 border-b border-dw-border flex items-center gap-3">
+        <h3 class="font-bold text-white">v1.0.10</h3>
       </div>
-      <ul class="px-5 py-4 space-y-1.5 text-sm text-gray-300">
-        <li class="flex gap-2"><span class="mt-0.5">🍎</span><span><strong class="text-white">Apple Silicon (M1–M5):</strong> True multi-arch image — arm64 + amd64. Docker Desktop picks the right variant automatically, no <code class="text-accent text-xs">--platform</code> flag needed.</span></li>
-        <li class="flex gap-2"><span class="mt-0.5">📦</span><span><strong class="text-white">Smaller image:</strong> Compressed size reduced to ~265 MB.</span></li>
+      <ul class="px-5 py-4 space-y-2 text-sm text-gray-300">
+        <li class="flex gap-2.5"><span class="flex-shrink-0">🍎</span><span><strong class="text-white">Apple Silicon:</strong> True multi-arch image (arm64 + amd64). Docker Desktop picks the right variant automatically.</span></li>
+        <li class="flex gap-2.5"><span class="flex-shrink-0">📦</span><span><strong class="text-white">Smaller image:</strong> Compressed size reduced to ~265 MB.</span></li>
       </ul>
     </div>
 
-    <!-- v1.0.4 -->
     <div class="bg-dw-panel border border-dw-border rounded-xl overflow-hidden">
       <div class="px-5 py-4 border-b border-dw-border flex items-center gap-3">
         <h3 class="font-bold text-white">v1.0.4</h3>
         <span class="text-gray-500 text-xs">Initial feature release</span>
       </div>
-      <ul class="px-5 py-4 space-y-1.5 text-sm text-gray-300">
-        <li class="flex gap-2"><span class="mt-0.5">✨</span><span>Three DataWeave versions pre-installed (2.11, 2.6, 2.3)</span></li>
-        <li class="flex gap-2"><span class="mt-0.5">✨</span><span>On-demand version download, multiple named inputs, import/export, light/dark theme</span></li>
-        <li class="flex gap-2"><span class="mt-0.5">✨</span><span>Six built-in example scripts, no payload size limits</span></li>
+      <ul class="px-5 py-4 space-y-2 text-sm text-gray-300">
+        <li class="flex gap-2.5"><span class="flex-shrink-0">✨</span><span>Three DataWeave versions pre-installed (2.11, 2.6, 2.3) with on-demand download</span></li>
+        <li class="flex gap-2.5"><span class="flex-shrink-0">✨</span><span>Multiple named inputs, import/export workspaces, light/dark theme</span></li>
+        <li class="flex gap-2.5"><span class="flex-shrink-0">✨</span><span>Six built-in example scripts, no payload size limits, context-aware autocomplete</span></li>
       </ul>
     </div>
 
   </div>
 </section>
 
-<!-- ── ROADMAP ────────────────────────────────────────────── -->
-<section id="roadmap" class="max-w-5xl mx-auto px-4 pb-20">
+<!-- ═══════════════════════════════════════════════════════════════
+     ROADMAP
+═══════════════════════════════════════════════════════════════ -->
+<section id="roadmap" class="max-w-6xl mx-auto px-4 pb-24">
   <h2 class="text-2xl font-bold text-white mb-2 text-center">Roadmap</h2>
-  <p class="text-gray-400 text-center mb-10">What's coming in future releases</p>
-
+  <p class="text-gray-400 text-center mb-10">What's shipped and what's coming</p>
   <div class="grid sm:grid-cols-2 gap-4">
 
-    <div class="bg-dw-panel border border-accent/40 rounded-xl p-5">
+    <div class="bg-dw-panel border border-green-500/30 rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="w-2 h-2 rounded-full bg-green-400"></span>
+        <span class="text-xs font-semibold text-green-400 uppercase tracking-wider">Complete</span>
+      </div>
+      <h3 class="font-semibold text-white mb-1">JVM Sidecar for DW 2.11</h3>
+      <p class="text-gray-400 text-sm">Persistent JVM engine replaces per-request process spawns — brings DW&nbsp;2.11 response times from ~2–5s down to ~150ms. JIT warmup included.</p>
+    </div>
+
+    <div class="bg-dw-panel border border-dw-border rounded-xl p-5">
       <div class="flex items-center gap-2 mb-3">
         <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
         <span class="text-xs font-semibold text-yellow-400 uppercase tracking-wider">In Progress</span>
       </div>
-      <h3 class="font-semibold text-white mb-1">JVM Sidecar for DW 2.11</h3>
-      <p class="text-gray-400 text-sm">Persistent JVM engine replaces per-request GraalVM process spawns — brings DW 2.11 response times from ~2–5s down to ~150ms.</p>
-    </div>
-
-    <div class="bg-dw-panel border border-dw-border rounded-xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-2 h-2 rounded-full bg-gray-500"></span>
-        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Planned</span>
-      </div>
-      <h3 class="font-semibold text-white mb-1">Performance improvements</h3>
-      <p class="text-gray-400 text-sm">Brotli pre-compression for static assets, response caching for identical transforms, connection keep-alive tuning.</p>
-    </div>
-
-    <div class="bg-dw-panel border border-dw-border rounded-xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-2 h-2 rounded-full bg-gray-500"></span>
-        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Planned</span>
-      </div>
       <h3 class="font-semibold text-white mb-1">Script history</h3>
-      <p class="text-gray-400 text-sm">Local browser-based history of recent scripts so you can quickly revert or replay a previous transformation.</p>
+      <p class="text-gray-400 text-sm">Browser-local history of recent scripts so you can quickly revisit or replay a previous transformation without losing your work.</p>
     </div>
 
     <div class="bg-dw-panel border border-dw-border rounded-xl p-5">
@@ -344,20 +776,32 @@
         <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Planned</span>
       </div>
       <h3 class="font-semibold text-white mb-1">Shareable workspace links</h3>
-      <p class="text-gray-400 text-sm">Encode script + input into a URL fragment so you can share a complete playground state with a single link.</p>
+      <p class="text-gray-400 text-sm">Encode the full script + inputs into a URL fragment so you can share a complete playground state with a single link.</p>
+    </div>
+
+    <div class="bg-dw-panel border border-dw-border rounded-xl p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="w-2 h-2 rounded-full bg-gray-500"></span>
+        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Planned</span>
+      </div>
+      <h3 class="font-semibold text-white mb-1">DataWeave module support</h3>
+      <p class="text-gray-400 text-sm">Import custom DW modules and reusable functions, mirroring the <code class="text-accent text-xs">import</code> workflow from local DW projects.</p>
     </div>
 
   </div>
 </section>
 
-<!-- ── BUG REPORTER ───────────────────────────────────────── -->
-<section id="bugs" class="max-w-5xl mx-auto px-4 pb-24">
-  <div class="bg-dw-panel border border-dw-border rounded-2xl p-8 text-center">
-    <div class="text-4xl mb-4">🐛</div>
+<!-- ═══════════════════════════════════════════════════════════════
+     BUG REPORTER
+═══════════════════════════════════════════════════════════════ -->
+<section id="bug-reporter" class="max-w-6xl mx-auto px-4 pb-24">
+  <div class="bg-dw-panel border border-dw-border rounded-2xl p-10 text-center relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-transparent pointer-events-none"></div>
+    <div class="text-5xl mb-5">🐛</div>
     <h2 class="text-2xl font-bold text-white mb-3">Found a bug?</h2>
     <p class="text-gray-400 max-w-lg mx-auto mb-8">
-      Open a GitHub issue and include the DW version, your script, input, and what you expected vs what happened.
-      Requests for new features and format support are welcome too.
+      Open a GitHub issue and include the DW version, your script, input payload,
+      and what you expected vs. what actually happened. Feature requests are welcome too.
     </p>
     <div class="flex flex-wrap justify-center gap-3">
       <a href="https://github.com/DeepankarSawhney/dataweave-playground-site/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D+"
@@ -376,12 +820,15 @@
   </div>
 </section>
 
-<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<!-- ═══════════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════════ -->
 <footer class="border-t border-dw-border">
-  <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-    <span>Built by <a href="https://github.com/DeepankarSawhney" class="hover:text-white transition-colors">Deepankar Sawhney</a></span>
-    <div class="flex items-center gap-4">
+  <div class="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+    <span>Built by <a href="https://github.com/DeepankarSawhney" target="_blank" class="hover:text-white transition-colors">Deepankar Sawhney</a></span>
+    <div class="flex items-center gap-5">
       <a href="https://hub.docker.com/r/deepankar2810/dataweave-playground" target="_blank" class="hover:text-white transition-colors">Docker Hub</a>
+      <a href="#releases" class="hover:text-white transition-colors">Releases</a>
       <a href="https://github.com/DeepankarSawhney/dataweave-playground-site/issues" target="_blank" class="hover:text-white transition-colors">Issues</a>
     </div>
     <span>Licensed under <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" class="hover:text-white transition-colors">Apache 2.0</a></span>
@@ -389,6 +836,7 @@
 </footer>
 
 <script>
+  /* ── Copy docker run command ── */
   function copyPull() {
     const cmd = document.getElementById('pull-cmd').textContent;
     navigator.clipboard.writeText(cmd).then(() => {
@@ -401,6 +849,28 @@
       }, 2000);
     });
   }
+
+  /* ── Tab system ── */
+  const TABS = ['filter', 'xml', 'csv'];
+  function showTab(id) {
+    TABS.forEach(t => {
+      document.getElementById('tab-' + t).classList.toggle('active', 'tab-' + t === id);
+      document.getElementById('btn-' + t).classList.toggle('active', 'tab-' + t === id);
+    });
+  }
+
+  /* ── Scroll-triggered fade-up for sections ── */
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.style.opacity = 1; e.target.style.transform = 'none'; }
+    }),
+    { threshold: 0.1 }
+  );
+  document.querySelectorAll('section').forEach(s => {
+    s.style.opacity = 0; s.style.transform = 'translateY(16px)';
+    s.style.transition = 'opacity .5s ease, transform .5s ease';
+    observer.observe(s);
+  });
 </script>
 </body>
 </html>
